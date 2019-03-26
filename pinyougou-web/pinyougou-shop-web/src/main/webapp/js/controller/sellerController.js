@@ -18,22 +18,6 @@ app.controller('sellerController', function($scope, $controller, baseService){
             });
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /** 查询条件对象 */
     $scope.searchEntity = {};
     /** 分页查询(查询条件) */
@@ -70,4 +54,58 @@ app.controller('sellerController', function($scope, $controller, baseService){
             alert("请选择要删除的记录！");
         }
     };
+
+
+    //显示商家资料
+    $scope.loadSeller = function () {
+        baseService.sendGet("/seller/findSeller").then(function (response) {
+            $scope.entity = response.data;
+        })
+    };
+
+    //修改商家资料
+    $scope.update = function () {
+        baseService.sendPost("/seller/update",$scope.entity).then(function (response) {
+            if(response.data){
+                alert("保存成功");
+            }else {
+                alert("修改失败");
+                $scope.loadSeller();
+            }
+        });
+    };
+
+    //重置清空密码
+    $scope.clear = function () {
+        $scope.user.password = '';
+        $scope.newPassword = '';
+        $scope.tryPassword = '';
+    };
+
+
+    //修改密码
+    $scope.changePasswrod = function () {
+        baseService.sendPost("/seller/judgePassword" , $scope.user.password).then(function (response) {
+            if(response.data){
+                if($scope.newPassword == $scope.tryPassword){
+                    baseService.sendPost("/seller/changePassword",$scope.newPassword).then(function (resp) {
+                        if(resp.data){
+                            alert("密码修改成功，请重新登录");
+                            location.href="/shoplogin.html";
+                        }else {
+                            alert("密码修改失败！");
+                        }
+                    });
+                }else{
+                    alert("新密码两次输入不一致");
+                    $scope.newPassword='';
+                    $scope.tryPassword='';
+                }
+            }else{
+                alert("输入原密码有误，请重新输入！")
+                $scope.clear();
+            }
+        });
+    }
+
 });

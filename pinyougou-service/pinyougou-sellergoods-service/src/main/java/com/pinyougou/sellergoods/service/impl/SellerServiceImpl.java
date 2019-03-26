@@ -44,6 +44,11 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public void update(Seller seller) {
+        try{
+            sellerMapper.updateByPrimaryKeySelective(seller);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -88,6 +93,27 @@ public class SellerServiceImpl implements SellerService {
             sellerMapper.updateStatus(sellerId, status);
         }catch (Exception ex){
             throw new RuntimeException(ex);
+        }
+    }
+
+    //获取商家按资料
+    @Override
+    public Seller findSeller(String sellerId) {
+        try{
+            return sellerMapper.selectByPrimaryKey(sellerId);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    //修改密码
+    @Override
+    public void changePassword(Seller seller) {
+        try{
+            sellerMapper.updateByPrimaryKeySelective(seller);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
     }
 }

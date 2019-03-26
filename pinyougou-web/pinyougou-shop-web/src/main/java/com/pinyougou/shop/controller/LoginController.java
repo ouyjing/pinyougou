@@ -71,6 +71,5 @@ public class LoginController {
         Map<String,String> data = new HashMap<>();
         data.put("loginName", loginName);
         return data;
-
     }
 }
