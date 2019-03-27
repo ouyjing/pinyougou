@@ -12,5 +12,7 @@ import com.pinyougou.pojo.User;
 public interface UserMapper extends Mapper<User>{
 
 
+    String findPasswordByUsername(String loginName);
 
+    void updateUser(User user);
 }

@@ -56,7 +56,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-
+        try{
+            // 密码需要MD5加密 commons-codec-xxx.jar
+            user.setPassword(DigestUtils.md5Hex(user.getPassword()));
+            // 修改时间
+            user.setUpdated(new Date());
+           userMapper.updateUser(user);
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -128,5 +136,15 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(ex);
         }
     }
-
+    /**
+     * 根据用户名查询密码
+     */
+    public String findByUsername(String loginName){
+        try {
+            return userMapper.findPasswordByUsername(loginName);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }
