@@ -40,6 +40,8 @@ app.controller('sellerController', function($scope, $controller, baseService){
     };
 
 
+    // 定义审核状态提示文本数组
+    $scope.status=['未审核','已审核','审核不通过','关闭'];
 
 
 
