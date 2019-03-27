@@ -1,9 +1,11 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.*;
 
 @Table(name="tb_pay_log")
 public class PayLog implements Serializable{
@@ -16,7 +18,7 @@ public class PayLog implements Serializable{
 	@Column(name="pay_time")
     private Date payTime;
 	@Column(name="total_fee")
-    private Long totalFee;
+    private BigDecimal totalFee;
 	@Column(name="user_id")
     private String userId;
 	@Column(name="transaction_id")
@@ -52,11 +54,11 @@ public class PayLog implements Serializable{
         this.payTime = payTime;
     }
 
-    public Long getTotalFee() {
+    public BigDecimal getTotalFee() {
         return totalFee;
     }
 
-    public void setTotalFee(Long totalFee) {
+    public void setTotalFee(BigDecimal totalFee) {
         this.totalFee = totalFee;
     }
 
@@ -99,4 +101,6 @@ public class PayLog implements Serializable{
     public void setPayType(String payType) {
         this.payType = payType == null ? null : payType.trim();
     }
+
+
 }
