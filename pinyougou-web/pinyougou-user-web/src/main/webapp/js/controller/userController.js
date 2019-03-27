@@ -27,6 +27,32 @@ app.controller('userController', function($scope, $timeout, baseService){
             alert("两次密码不一致！");
         }
     };
+$scope.updatePassword = function () {
+    // 判断密码是否一致
+    if (!$scope.content.password || $scope.content.password != $scope.content.confirm_password){
+        alert("两次密码不一致！")
+        return;
+    }
+    if ( $scope.content.password == $scope.content.oldPassword){
+        alert("新密码不能与原密码一致！")
+        return;
+    }
+        // 发送异步请求
+        baseService.sendPost("/user/updatePassword",$scope.content).then(function(response){
+            // 获取响应数据
+            if (response.data){
+                // 跳转到登录页面
+                alert("密码修改成功!")
+                location.href = "http://sso.pinyougou.com/login?service=http%3A%2F%2Fuser.pinyougou.com%2Flogin"
+                // 清空表单数据
+                $scope.content.oldPassword = "";
+                $scope.content.password = "";
+                $scope.content.confirm_password = "";
+            }else{
+                alert("密码更新失败！");
+            }
+        });
+    }
 
 
 

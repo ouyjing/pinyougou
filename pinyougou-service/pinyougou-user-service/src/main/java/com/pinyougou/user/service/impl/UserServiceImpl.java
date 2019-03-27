@@ -202,4 +202,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 根据用户名查询密码
+     */
+    public String findByUsername(String loginName){
+        try {
+            return userMapper.findPasswordByUsername(loginName);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }

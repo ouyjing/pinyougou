@@ -60,6 +60,7 @@ public class BrandController {
     public boolean update(@RequestBody Brand brand){
         try{
             brandService.update(brand);
+
             return true;
         }catch (Exception ex){
             ex.printStackTrace();
