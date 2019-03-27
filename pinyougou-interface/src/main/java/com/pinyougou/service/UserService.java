@@ -48,4 +48,8 @@ public interface UserService {
     PayLog findPayLogFromRedis(String orderId);
     // 修改订单状态、更新支付日志
     void updateStatus(String outTradeNo, String transaction_id);
+	/**
+	 * 根据用户名查询密码
+	 */
+	String findByUsername(String loginName);
 }
