@@ -1,8 +1,25 @@
 /** 定义控制器层 */
-app.controller('indexController', function ($scope, $controller,$interval, $location, baseService) {
+app.controller('indexController', function ($http,$scope, $controller,$interval, $location, baseService) {
 
     // brandController中的$scope 需要 继承到baseController的$scope中的方法
     $controller("baseController", {$scope: $scope});
+
+    // 定义分页指令需要的配置信息对象(JSON)
+    $scope.paginationConf = {
+        currentPage : 1, // 当前页码 (默认值：1)
+        totalItems : 0, // 总记录数 (默认值：0)
+        itemsPerPage: 3, // 页大小 (默认值: 15)
+        perPageOptions : [3,6,9,12,15], // 页码下拉列表框([10, 15, 20, 30, 50])
+        onChange : function(){ // 当页码发生改变时会调用的函数
+            // 调用分页查询品牌方法
+            $scope.reload();
+        }
+    };
+    /** 重新加载数据方法 */
+    $scope.reload = function(){
+        $scope.search($scope.paginationConf.currentPage,
+            $scope.paginationConf.itemsPerPage);
+    };
 
     // 获取登录用户名
     $scope.showName = function () {
@@ -13,13 +30,17 @@ app.controller('indexController', function ($scope, $controller,$interval, $loca
     };
 
     /**  分页查询订单 */
-    $scope.search = function () {
+    $scope.search = function (page,rows) {
         // 查询条件
         //alert(JSON.stringify($scope.searchEntity));
         // 发送异步请求
-        baseService.sendGet("/order/findOrderByUserId").then(function (response) {
-            $scope.orderList = response.data;
-        });
+        /** 发送异步请求分页查询品牌数据 */
+        $http.get('/order/findOrderByUserId?page='+ page +'&rows=' + rows)
+            .then(function(response){
+                $scope.orderList = response.data.rows;
+                /** 更新总记录数 */
+                $scope.paginationConf.totalItems = response.data.total;
+            });
     };
 
     /** 跳转到【微信扫码支付页面】进行支付  */

@@ -14,4 +14,5 @@ app.controller('baseController', function ($scope, baseService) {
         });
     };
 
+
 });

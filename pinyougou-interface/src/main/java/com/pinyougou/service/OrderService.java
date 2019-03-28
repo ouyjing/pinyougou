@@ -41,7 +41,7 @@ public interface OrderService {
     /** 支付成功，业务处理 */
 	void updateStatus(String outTradeNo, String transactionId);
 	//查询订单
-	List<Map<String,Object>> findOrderByUserId(String userId);
+	Map<String,Object> findOrderByUserId(String userId,Integer pageNum ,Integer pageSize);
 
 
 

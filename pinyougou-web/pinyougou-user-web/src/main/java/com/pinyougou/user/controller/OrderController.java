@@ -30,9 +30,9 @@ public class OrderController {
     private HttpServletRequest request;
     //查询订单
     @GetMapping("/findOrderByUserId")
-    public List<Map<String,Object>> findOrderByUserId(){
+    public Map<String,Object> findOrderByUserId(Integer page ,Integer rows){
         String userId = request.getRemoteUser();
-        List<Map<String,Object>> orderByUserId = orderService.findOrderByUserId(userId);
+        Map<String,Object> orderByUserId = orderService.findOrderByUserId( userId, page , rows);
         return orderByUserId;
     }
 

@@ -72,7 +72,7 @@
           class="org.springframework.security.web.authentication.logout.LogoutFilter">
         <!-- 配置退出成功请求地址-->
         <constructor-arg name="logoutSuccessUrl"
-                         value="http://sso.pinyougou.com/logout?service=http://www.pinyougou.com"/>
+                         value="http://sso.pinyougou.com/logout?service=http://user.pinyougou.com"/>
         <!-- 配置退出处理器 -->
         <constructor-arg>
             <bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>

@@ -2,6 +2,9 @@ package com.pinyougou.order.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pinyougou.cart.Cart;
 import com.pinyougou.common.util.IdWorker;
 import com.pinyougou.mapper.*;
@@ -227,14 +230,23 @@ public class OrderServiceImpl implements OrderService {
     private ItemMapper itemMapper;
     //查询订单
     @Override
-    public List<Map<String,Object>> findOrderByUserId(String userId) {
+    public Map<String,Object> findOrderByUserId(String userId,Integer pageNum ,Integer pageSize) {
+        Map<String,Object> map = new HashMap<>();
+
+        PageInfo<Order> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(new ISelect() {
+            @Override
+            public void doSelect() {
+                Example example = new Example(Order.class);
+                Example.Criteria criteria = example.createCriteria();
+                criteria.andEqualTo("userId",userId);
+                orderMapper.selectByExample(example);
+            }
+        });
+
+
         //订单集合
         List<Map<String,Object>> orderLists = new ArrayList<>();
-
-        Example example = new Example(Order.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",userId);
-        List<Order> orders = orderMapper.selectByExample(example);
+        List<Order> orders = pageInfo.getList();
         //遍历订单总数
         for (Order order : orders) {
             Map<String,Object> orderList = new HashMap<>();
@@ -286,8 +298,8 @@ public class OrderServiceImpl implements OrderService {
                 Long itemId = orderItem.getItemId();
                 Item item = itemMapper.selectByPrimaryKey(itemId);
                 String spec = item.getSpec();
-                Map map = JSON.parseObject(spec, Map.class);
-                String s = map.toString();
+                Map map1 = JSON.parseObject(spec, Map.class);
+                String s = map1.toString();
                 String replace = s.replace("{", "").replace("}", "").replace("=", ":");
 
                 goods.put("spec",replace);
@@ -301,7 +313,8 @@ public class OrderServiceImpl implements OrderService {
             orderLists.add(orderList);
 
         }
-        return orderLists;
-
+        map.put("rows",orderLists);
+        map.put("total",pageInfo.getTotal());
+        return map;
     }
 }
