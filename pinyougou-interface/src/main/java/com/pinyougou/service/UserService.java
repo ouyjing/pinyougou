@@ -21,7 +21,7 @@ public interface UserService {
     /**
      * 修改方法
      */
-    void update(User user);
+    void update(String clumnName,User user,String massage);
 
     /**
      * 根据主键id删除
@@ -59,7 +59,7 @@ public interface UserService {
     boolean checkSmsCode(String phone, String code);
 
     /**
-     * 根据用户名查询密码
+     * 根据用户名查询信息
      */
-    String findByUsername(String loginName);
+    String findByUsername(String clumnName,String loginName);
 }

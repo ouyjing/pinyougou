@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +73,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public PageResult findByPage(Brand brand, int page, int rows) {
+    public PageResult findByPage(Brand brand, Integer page, Integer rows) {
         try{
             // 开始分页
             PageInfo<Brand> pageInfo = PageHelper.startPage(page, rows)

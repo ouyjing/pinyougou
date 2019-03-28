@@ -55,13 +55,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) {
+    public void update(String clumnName,User user,String massage) {
         try{
-            // 密码需要MD5加密 commons-codec-xxx.jar
-            user.setPassword(DigestUtils.md5Hex(user.getPassword()));
             // 修改时间
             user.setUpdated(new Date());
-           userMapper.updateUser(user);
+           userMapper.updateUser(clumnName,user.getUpdated(),user.getUsername(),massage);
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
             params.put("phone", phone);
             params.put("signName", signName);
             params.put("templateCode", templateCode);
-            params.put("templateParam", "{'number':'"+ code +"'}");
+            params.put("templateParam", "{\"code\":\"" + code + "\"}");
             // 调用短信接口
             String content = httpClientUtils.sendPost(smsUrl, params);
             System.out.println(content);
@@ -137,11 +135,11 @@ public class UserServiceImpl implements UserService {
         }
     }
     /**
-     * 根据用户名查询密码
+     * 根据用户名查询信息
      */
-    public String findByUsername(String loginName){
+    public String findByUsername(String clumnName,String loginName){
         try {
-            return userMapper.findPasswordByUsername(loginName);
+            return userMapper.findByUsername(clumnName,loginName);
         }catch (Exception ex){
             ex.printStackTrace();
             return null;

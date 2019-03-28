@@ -32,7 +32,7 @@ public interface BrandService {
 	List<Brand> findAll();
 
 	/** 多条件分页查询 */
-	PageResult findByPage(Brand brand, int page, int rows);
+	PageResult findByPage(Brand brand, Integer page, Integer rows);
 
 	/** 查询全部品牌(id与name) */
     List<Map<String,Object>> findAllByIdAndName();
