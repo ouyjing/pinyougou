@@ -85,6 +85,19 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     //修改密码
     $scope.changePasswrod = function () {
+        if($scope.user.password == undefined){
+            alert("请输入原密码！")
+        }
+
+        if($scope.newPassword == undefined){
+            alert("请输入新密码！");
+        }
+        if($scope.user.password == $scope.newPassword){
+            alert("新密码不能和原始密码相同，请重新输入");
+            $scope.user.password = '';
+            $scope.newPassword = '';
+            return;
+        }
         baseService.sendPost("/seller/judgePassword" , $scope.user.password).then(function (response) {
             if(response.data){
                 if($scope.newPassword == $scope.tryPassword){
