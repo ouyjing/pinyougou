@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<title>结算页</title>
+	<base href="/"/>
     <link rel="stylesheet" type="text/css" href="/css/webbase.css"/>
 	<link rel="stylesheet" type="text/css" href="/css/pages-getOrderInfo.css"/>
 
@@ -10,12 +11,17 @@
 	<script src="/js/base.js"></script>
 	<script src="/js/service/baseService.js"></script>
 	<script src="/js/controller/baseController.js"></script>
-	<script src="/js/controller/cartController.js"></script>
 	<script src="/js/controller/orderController.js"></script>
+	<script type="text/javascript">
+        // 配置位置提供者
+        app.config(function($locationProvider){
+            $locationProvider.html5Mode(true);
+        });
+	</script>
 </head>
 <body ng-app="pinyougou"
 	  ng-controller="orderController"
-	  ng-init="loadUsername();findAddressByUser();findCart();">
+	  ng-init="loadUsername();findAddressByUser();">
 	<!--head-->
 	<div class="top">
 		<div class="py-container">
@@ -175,26 +181,27 @@
 					</div>
 					{{order}}
 					<div class="hr"></div>
+					{{goodsItem}}
 					<div class="step-tit">
 						<h5>送货清单</h5>
 					</div>
 					<div class="step-cont">
 						<ul class="send-detail">
-							<li ng-repeat="cart in carts">
-								<div ng-repeat="orderItem in cart.orderItems">
-									<ul class="yui3-g">
+							<li>
+								<div>
+									<ul class="yui3-g" ng-repeat="goods in goodsItem">
 										<li class="yui3-u-1-6">
-											<span><img src="{{orderItem.picPath}}" width="100px"/></span>
+											<span><img src="{{goods.picPath}}" width="100px"/></span>
 										</li>
 										<li class="yui3-u-7-12">
-											<div class="desc">{{orderItem.title}}</div>
+											<div class="desc">{{goods.title}}</div>
 											<div class="seven">7天无理由退货</div>
 										</li>
 										<li class="yui3-u-1-12">
-											<div class="price">￥{{orderItem.price.toFixed(2)}}</div>
+											<div class="price">￥{{goods.price.toFixed(2)}}</div>
 										</li>
 										<li class="yui3-u-1-12">
-											<div class="num">X{{orderItem.num}}</div>
+											<div class="num">X{{goods.num}}</div>
 										</li>
 										<li class="yui3-u-1-12">
 											<div class="exit">有货</div>

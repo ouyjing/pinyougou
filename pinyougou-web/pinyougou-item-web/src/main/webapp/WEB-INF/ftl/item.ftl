@@ -25,7 +25,6 @@
 
    <#-- 包含指令 -->
    <#include 'header.ftl'/>
-
    <div class="py-container">
 		<div id="item">
 			<div class="crumb-wrap">

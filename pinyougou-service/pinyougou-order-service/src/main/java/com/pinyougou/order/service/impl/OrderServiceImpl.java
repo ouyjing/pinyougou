@@ -1,23 +1,23 @@
 package com.pinyougou.order.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pinyougou.cart.Cart;
 import com.pinyougou.common.util.IdWorker;
-import com.pinyougou.mapper.OrderItemMapper;
-import com.pinyougou.mapper.OrderMapper;
-import com.pinyougou.mapper.PayLogMapper;
-import com.pinyougou.pojo.Order;
-import com.pinyougou.pojo.OrderItem;
-import com.pinyougou.pojo.PayLog;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
 import com.pinyougou.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 订单服务接口实现类
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
                 // 创建时间
                 payLog.setCreateTime(new Date());
                 // 支付的总金额(分)
-                payLog.setTotalFee((long)(totalMoney * 100));
+                payLog.setTotalFee(BigDecimal.valueOf((long)(totalMoney * 100)));
                 // 用户id
                 payLog.setUserId(order.getUserId());
                 // 交易状态 (未支付)
@@ -218,5 +218,103 @@ public class OrderServiceImpl implements OrderService {
         }catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+    @Autowired
+    private SellerMapper sellerMapper;
+    @Autowired
+    private GoodsDescMapper goodsDescMapper;
+    @Autowired
+    private GoodsMapper goodsMapper;
+    @Autowired
+    private ItemMapper itemMapper;
+    //查询订单
+    @Override
+    public Map<String,Object> findOrderByUserId(String userId,Integer pageNum ,Integer pageSize) {
+        Map<String,Object> map = new HashMap<>();
+
+        PageInfo<Order> pageInfo = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(new ISelect() {
+            @Override
+            public void doSelect() {
+                Example example = new Example(Order.class);
+                Example.Criteria criteria = example.createCriteria();
+                criteria.andEqualTo("userId",userId);
+                orderMapper.selectByExample(example);
+            }
+        });
+
+
+        //订单集合
+        List<Map<String,Object>> orderLists = new ArrayList<>();
+        List<Order> orders = pageInfo.getList();
+        //遍历订单总数
+        for (Order order : orders) {
+            Map<String,Object> orderList = new HashMap<>();
+            //d订单创建时间
+            Map<String,Date> createTime = new HashMap<>();
+            Date orderCreateTime = order.getCreateTime();
+            orderList.put("createTime",orderCreateTime);
+            //订单Id
+            String orderId = String.valueOf(order.getOrderId());
+            Map<String,Long> orderIds = new HashMap<>();
+            orderList.put("orderId",orderId);
+            //订单店铺名称
+            String sellerId = order.getSellerId();
+            Seller seller = sellerMapper.selectByPrimaryKey(sellerId);
+            String nickName = seller.getNickName();
+            Map<String,String> sellerName = new HashMap<>();
+            orderList.put("sellerName",nickName);
+            //订单实付款
+            String payment = String.valueOf(order.getPayment());
+            orderList.put("payment",payment);
+            //订单状态
+            String status = order.getStatus();
+            orderList.put("status",status);
+
+            //封装商品集合
+            List<Map<String,Object>> goodsList = new ArrayList<>();
+            Example example1 = new Example(OrderItem.class);
+            Example.Criteria criteria1 = example1.createCriteria();
+            criteria1.andEqualTo("orderId",orderId);
+            List<OrderItem> orderItems = orderItemMapper.selectByExample(example1);
+            for (OrderItem orderItem : orderItems) {
+                Map<String,Object> goods = new HashMap<>();
+                //商品图片
+                String picPath = orderItem.getPicPath();
+                goods.put("picPath",picPath);
+                //商品标题
+                String title = orderItem.getTitle();
+                goods.put("title",title);
+                //商品单价
+                BigDecimal price = orderItem.getPrice();
+                goods.put("price",price);
+                //商品数量
+                Integer num = orderItem.getNum();
+                goods.put("num",num);
+                //商品总金额
+                String totalFee = String.valueOf(orderItem.getTotalFee());
+                goods.put("totalFee",totalFee);
+                //根据商品id查询item表,得到商品属性
+                Long itemId = orderItem.getItemId();
+                Item item = itemMapper.selectByPrimaryKey(itemId);
+                String spec = item.getSpec();
+                Map map1 = JSON.parseObject(spec, Map.class);
+                String s = map1.toString();
+                String replace = s.replace("{", "").replace("}", "").replace("=", ":");
+
+                goods.put("spec",replace);
+
+                //商品集合添加商品
+                goodsList.add(goods);
+            }
+
+            orderList.put("orderItem",goodsList);
+
+            orderLists.add(orderList);
+
+        }
+        map.put("rows",orderLists);
+        map.put("total",pageInfo.getTotal());
+        return map;
     }
 }
