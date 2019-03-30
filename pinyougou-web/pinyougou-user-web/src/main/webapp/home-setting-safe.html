@@ -402,11 +402,11 @@
                                 <div class="control-group">
                                     <label for="inputcode" class="control-label">验证码：</label>
                                     <div class="controls">
-                                        <input name="inputcode" ng-model="Code"
+                                        <input name="inputcode" ng-model="code"
                                                type="text" id="inputcode">
                                     </div>
                                     <div class="controls">
-                                        <img src="/verify"/>
+                                        <img src="/verify" onclick="src='/verify?t=' + new Date().getTime();">
                                     </div>
                                 </div>
                                 <div class="control-group">

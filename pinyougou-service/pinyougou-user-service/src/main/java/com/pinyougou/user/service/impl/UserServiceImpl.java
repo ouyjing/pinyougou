@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
             params.put("phone", phone);
             params.put("signName", signName);
             params.put("templateCode", templateCode);
-            params.put("templateParam", "{'number':'"+ code +"'}");
+            params.put("templateParam", "{\"code\":\""+ code +"\"}");
             // 调用短信接口
             String content = httpClientUtils.sendPost(smsUrl, params);
             System.out.println(content);

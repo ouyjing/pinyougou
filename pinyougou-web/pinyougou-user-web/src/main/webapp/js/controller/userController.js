@@ -65,7 +65,7 @@ app.controller('userController', function ($scope, $timeout, baseService) {
     /** 验证身份 */
     $scope.checkPhoneNumber = function () {
         // 发送异步请求
-        baseService.sendGet("/user/checkPhoneNumber?code=" + $scope.code + "&phoneCode=" + $scope.phoneCode,
+        baseService.sendPost("/user/checkPhoneNumber?code=" + $scope.code + "&phoneCode=" + $scope.phoneCode,
             $scope.user).then(function (response) {
             // 获取响应数据
             if (response.data) {
@@ -81,7 +81,7 @@ app.controller('userController', function ($scope, $timeout, baseService) {
     }
     $scope.updatePhoneNumber =function () {
         // 发送异步请求
-        baseService.sendPost("/user/save?code=" + $scope.code + "&phoneCode=" + $scope.phoneCode,
+        baseService.sendPost("/user/updatePhoneNumber?code=" + $scope.code + "&phoneCode=" + $scope.phoneCode,
             $scope.user).then(function (response) {
             // 获取响应数据
             if (response.data) {
@@ -139,6 +139,5 @@ app.controller('userController', function ($scope, $timeout, baseService) {
             $scope.flag = false;
         }
     };
-
 
 });
